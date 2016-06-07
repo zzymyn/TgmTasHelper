@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TgmTasHelper.Simulation
 {
-    public interface IReadOnlyBoard
+    public interface IReadOnlyBoard : IEquatable<IReadOnlyBoard>
     {
         int Width { get; }
         int HeightVisible { get; }
@@ -19,5 +19,7 @@ namespace TgmTasHelper.Simulation
 
         TetrominoType GetVisible(int x, int y);
         TetrominoType GetLogical(int x, int y);
+
+        Vec2 GetSpawnPos();
     }
 }

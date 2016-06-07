@@ -6,9 +6,16 @@ using System.Threading.Tasks;
 
 namespace TgmTasHelper.Simulation
 {
-    public interface IReadWriteBoard : IReadOnlyBoard
+    public enum Rotation
     {
-        int ClearCompletedLines();
-        void Set(int x, int y, TetrominoType tetrominoType);
+        None,
+        A,
+        B,
+        C,
+    }
+
+    public static class RotationExtensions
+    {
+
     }
 }

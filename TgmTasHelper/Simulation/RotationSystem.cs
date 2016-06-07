@@ -62,9 +62,9 @@ namespace TgmTasHelper.Simulation
             };
         }
 
-        public static Vec2[] GetTetrominoPoints(TetrominoType tetrominoType, int rotation)
+        public static Vec2[] GetTetrominoPoints(TetrominoType tetrominoType, int angle)
         {
-            return s_Def[tetrominoType][rotation];
+            return s_Def[tetrominoType][angle];
         }
     }
 }

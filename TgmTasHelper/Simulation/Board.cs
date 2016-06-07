@@ -36,6 +36,11 @@ namespace TgmTasHelper.Simulation
             for (int x = 0; x < Width; ++x)
                 for (int y = 0; y < HeightLogical; ++y)
                     m_Data[x, y] = TetrominoType.Empty;
+
+            Set(3, 0, TetrominoType.T);
+            Set(4, 0, TetrominoType.T);
+            Set(5, 0, TetrominoType.T);
+            Set(4, 1, TetrominoType.T);
         }
 
         public IReadWriteBoard CreateCopy()
@@ -71,11 +76,89 @@ namespace TgmTasHelper.Simulation
             return m_Data[x, y];
         }
 
-        private void Set(int x, int y, TetrominoType tetrominoType)
+        public Vec2 GetSpawnPos()
+        {
+            return new Vec2(Width / 2, HeightLogical - 3);
+        }
+
+        public void Set(int x, int y, TetrominoType tetrominoType)
         {
             if (x < 0 || x >= Width || y < 0 || y >= HeightLogical)
                 return;
             m_Data[x, y] = tetrominoType;
+        }
+
+        public int ClearCompletedLines()
+        {
+            int completedLines = 0;
+
+            for (int y = HeightLogical - 1; y >= 0; --y)
+            {
+                if (!IsFullRow(y))
+                    continue;
+
+                ++completedLines;
+                RemoveRow(y);
+            }
+
+            return completedLines;
+        }
+
+        public bool Equals(IReadOnlyBoard other)
+        {
+            if (other == null)
+                return false;
+            if (Width != other.Width || HeightLogical != other.HeightLogical)
+                return false;
+            for (int x = 0; x < Width; ++x)
+                for (int y = 0; y < HeightLogical; ++y)
+                    if (GetLogical(x, y) != other.GetLogical(x, y))
+                        return false;
+            return true;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as IReadOnlyBoard);
+        }
+
+        public override int GetHashCode()
+        {
+            int h = 17;
+            h = h *= 31 + Width.GetHashCode();
+            h = h *= 31 + HeightLogical.GetHashCode();
+            for (int x = 0; x < Width; ++x)
+                for (int y = 0; y < HeightLogical; ++y)
+                    h = h *= 31 + m_Data[x, y].GetHashCode();
+            return h;
+        }
+
+        private bool IsFullRow(int y)
+        {
+            for (int x = 0; x < Width; ++x)
+            {
+                if (GetLogical(x, y) == TetrominoType.Empty)
+                    return false;
+            }
+            return true;
+        }
+
+        private void RemoveRow(int yStart)
+        {
+            int yEnd = HeightLogical - 1;
+
+            for (int y = yStart; y < yEnd; ++y)
+            {
+                for (int x = 0; x < Width; ++x)
+                {
+                    m_Data[x, y] = m_Data[x, y + 1];
+                }
+            }
+
+            for (int x = 0; x < Width; ++x)
+            {
+                m_Data[x, yEnd] = TetrominoType.Empty;
+            }
         }
     }
 }

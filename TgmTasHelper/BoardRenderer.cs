@@ -16,7 +16,7 @@ namespace TgmTasHelper
 {
     public partial class BoardRenderer : Control
     {
-        private Board m_Board = null;
+        private IReadOnlyBoard m_Board = null;
         private Bitmap m_GameStateBitmap = null;
         private Font m_Font = new Font(FontFamily.GenericMonospace, 12.0f, FontStyle.Bold);
 
@@ -24,7 +24,7 @@ namespace TgmTasHelper
         private Brush m_BorderBrush = new SolidBrush(Color.FromArgb(60, 60, 60));
         private Brush m_BoardBrush = new SolidBrush(Color.FromArgb(0, 0, 0));
 
-        private Board Board
+        public IReadOnlyBoard Board
         {
             get { return m_Board; }
             set
