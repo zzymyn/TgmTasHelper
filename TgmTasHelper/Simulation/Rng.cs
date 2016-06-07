@@ -14,12 +14,20 @@ namespace TgmTasHelper.Simulation
         private const int HistorySize = 4;
         private const int HistoryRetry = 5;
 
-        private UInt32 m_State = 0;
-        private TetrominoType[] m_History = new TetrominoType[HistorySize];
+        private UInt32 m_State;
+        private TetrominoType[] m_History;
+
+        public Rng(Rng rng)
+        {
+            m_State = rng.m_State;
+            m_History = new TetrominoType[HistorySize];
+            Array.Copy(rng.m_History, m_History, m_History.Length);
+        }
 
         public Rng(UInt32 state, TetrominoType initialBlock)
         {
             m_State = state;
+            m_History = new TetrominoType[HistorySize];
             m_History[0] = TetrominoType.Z;
             m_History[1] = TetrominoType.Z;
             m_History[2] = TetrominoType.S;

@@ -1,6 +1,6 @@
 ﻿namespace TgmTasHelper
 {
-    partial class GameStateRenderer
+    partial class BoardRenderer
     {
         /// <summary> 
         /// Required designer variable.

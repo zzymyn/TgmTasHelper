@@ -28,14 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.gameStateRenderer1 = new TgmTasHelper.GameStateRenderer();
+            this.gameStateRenderer1 = new TgmTasHelper.BoardRenderer();
             this.SuspendLayout();
             // 
             // gameStateRenderer1
             // 
-            this.gameStateRenderer1.Location = new System.Drawing.Point(76, 132);
+            this.gameStateRenderer1.Location = new System.Drawing.Point(12, 12);
+            this.gameStateRenderer1.MaximumSize = new System.Drawing.Size(200, 400);
+            this.gameStateRenderer1.MinimumSize = new System.Drawing.Size(200, 400);
             this.gameStateRenderer1.Name = "gameStateRenderer1";
-            this.gameStateRenderer1.Size = new System.Drawing.Size(220, 420);
+            this.gameStateRenderer1.Size = new System.Drawing.Size(200, 400);
             this.gameStateRenderer1.TabIndex = 0;
             this.gameStateRenderer1.Text = "gameStateRenderer1";
             // 
@@ -43,17 +45,17 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(986, 828);
+            this.ClientSize = new System.Drawing.Size(1478, 847);
             this.Controls.Add(this.gameStateRenderer1);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "TGM TAS Helper";
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private GameStateRenderer gameStateRenderer1;
+        private BoardRenderer gameStateRenderer1;
     }
 }
 
