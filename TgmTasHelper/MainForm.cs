@@ -20,14 +20,18 @@ namespace TgmTasHelper
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            GameState g = new GameState();
-            m_CurrentBoardRenderer.Board = g.Board;
+            GameState g = new GameState(
+                TetrominoType.L,
+                new TgmGameRules(),
+                new TgmRng(0x809CCF4E, TetrominoType.L)
+                );
+            m_CurrentBoardRenderer.SetBoard(g.Board);
 
-            foreach (var a in PieceSimulator.BruteForce(g, TetrominoType.S))
+            foreach (var a in Solver.BruteForce(g))
             {
                 var r = new BoardRenderer();
                 m_Choices.Controls.Add(r);
-                r.Board = a.Board;
+                r.SetBoardAndTetromino(g.Board, a.Tetromino, g.GameRules);
             }
         }
     }

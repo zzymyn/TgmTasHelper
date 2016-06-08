@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TgmTasHelper.Simulation
 {
-    public enum Movement
+    public enum Movement : byte
     {
         None,
         Left,

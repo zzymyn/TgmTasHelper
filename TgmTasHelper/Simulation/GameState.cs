@@ -6,15 +6,40 @@ using System.Threading.Tasks;
 
 namespace TgmTasHelper.Simulation
 {
-    public class GameState
+    public class GameState : IGameState
     {
-        public IReadOnlyBoard Board { get; private set; }
+        public IGameState PreviousGameState { get; private set; }
+        public TetrominoType NextTetromino { get; private set; }
+        public IGameRules GameRules { get; private set; }
+        public IRng Rng { get; private set; }
+        public IBoard Board { get; private set; }
         public int Level { get; private set; }
 
-        public GameState()
+        public GameState(TetrominoType firstBlock, IGameRules gameRules, IRng rng)
         {
-            Board = new Board();
+            PreviousGameState = null;
+            NextTetromino = firstBlock;
+            GameRules = gameRules;
+            Rng = rng;
+            Board = new MutableBoard(gameRules);
             Level = 0;
+        }
+
+        public GameState(IGameState other, ITetromino tetromino)
+        {
+            PreviousGameState = other;
+            NextTetromino = other.Rng.Peek().First();
+            GameRules = other.GameRules;
+            Rng = other.Rng.Next();
+
+            int linesCleared;
+            Board = other.Board.LockTetromino(tetromino, out linesCleared);
+            Level = other.Level;
+        }
+
+        public IGameState Next(ITetromino tetromino)
+        {
+            return new GameState(this, tetromino);
         }
     }
 }

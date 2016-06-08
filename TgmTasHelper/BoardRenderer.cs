@@ -16,37 +16,86 @@ namespace TgmTasHelper
 {
     public partial class BoardRenderer : Control
     {
-        private IReadOnlyBoard m_Board = null;
-        private Bitmap m_GameStateBitmap = null;
+        private CancellationTokenSource m_CancelTokenSource;
+        private Bitmap m_Bitmap = null;
         private Font m_Font = new Font(FontFamily.GenericMonospace, 12.0f, FontStyle.Bold);
 
         private Color m_BackgroundColor = Color.FromArgb(20, 20, 20);
         private Brush m_BorderBrush = new SolidBrush(Color.FromArgb(60, 60, 60));
         private Brush m_BoardBrush = new SolidBrush(Color.FromArgb(0, 0, 0));
 
-        public IReadOnlyBoard Board
-        {
-            get { return m_Board; }
-            set
-            {
-                m_Board = value;
-                m_GameStateBitmap = null;
-                Invalidate();
-            }
-        }
-
         public BoardRenderer()
         {
             InitializeComponent();
-            Size = new System.Drawing.Size(200, 400);
-            MinimumSize = Size;
-            MaximumSize = Size;
             SetStyle(ControlStyles.AllPaintingInWmPaint, true);
             SetStyle(ControlStyles.DoubleBuffer, true);
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
             SetStyle(ControlStyles.Opaque, true);
             SetStyle(ControlStyles.UserPaint, true);
-            Board = new Board();
+        }
+
+        public void Reset()
+        {
+            if (m_CancelTokenSource != null)
+            {
+                m_CancelTokenSource.Cancel();
+                m_CancelTokenSource = null;
+            }
+
+            m_CancelTokenSource = new CancellationTokenSource();
+            m_Bitmap = null;
+            MinimumSize = new Size(150, 150);
+            MaximumSize = new Size(150, 150);
+            Size = new Size(150, 150);
+            Invalidate(false);
+        }
+
+        public void SetBoard(IBoard board)
+        {
+            DoLoad((CancellationToken ct) =>
+            {
+                return Renderer.RenderBoard(board, 20, ct);
+            });
+        }
+
+        public void SetBoardAndTetromino(IBoard board, ITetromino tetromino, IGameRules gameRules)
+        {
+            DoLoad((CancellationToken ct) =>
+            {
+                return Renderer.RenderBoard(board, tetromino, gameRules, 20, ct);
+            });
+        }
+
+        public void SetBitmap(Bitmap bitmap)
+        {
+            m_Bitmap = bitmap;
+            MinimumSize = m_Bitmap.Size;
+            MaximumSize = m_Bitmap.Size;
+            Size = m_Bitmap.Size;
+            Invalidate(false);
+        }
+
+        private async void DoLoad(Func<CancellationToken, Bitmap> func)
+        {
+            Reset();
+
+            try
+            {
+                var tokenSource = m_CancelTokenSource;
+
+                var bitmap = await Task.Run(() =>
+                {
+                    return func(tokenSource.Token);
+                }, tokenSource.Token);
+
+                tokenSource.Token.ThrowIfCancellationRequested();
+
+                SetBitmap(bitmap);
+            }
+            catch (OperationCanceledException)
+            {
+                // abort
+            }
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -55,22 +104,19 @@ namespace TgmTasHelper
 
             e.Graphics.Clear(m_BackgroundColor);
 
-            if (m_Board == null)
+            if (m_Bitmap == null)
             {
-                e.Graphics.DrawString("no state", m_Font, Brushes.White, midPos, new StringFormat()
+                e.Graphics.DrawString("rendering...", m_Font, Brushes.White, midPos, new StringFormat()
                 {
                     LineAlignment = StringAlignment.Center,
                     Alignment = StringAlignment.Center,
                 });
                 return;
             }
-
-            if (m_GameStateBitmap == null)
+            else if (m_Bitmap != null)
             {
-                m_GameStateBitmap = Renderer.RenderBoard(m_Board, 20);
+                e.Graphics.DrawImage(m_Bitmap, 0.0f, 0.0f);
             }
-
-            e.Graphics.DrawImage(m_GameStateBitmap, 0.0f, 0.0f);
         }
     }
 }

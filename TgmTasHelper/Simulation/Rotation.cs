@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TgmTasHelper.Simulation
 {
-    public enum Rotation
+    public enum Rotation : byte
     {
         None,
         A,

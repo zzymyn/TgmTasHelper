@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace TgmTasHelper.Simulation
 {
-    public interface IReadWriteBoard : IReadOnlyBoard
+    public interface ITetromino
     {
-        int ClearCompletedLines();
-        void Set(int x, int y, TetrominoType tetrominoType);
+        TetrominoType Type { get; }
+        Vec2 Pos { get; }
+        int Angle { get; }
     }
 }

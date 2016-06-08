@@ -13,6 +13,8 @@ namespace TgmTasHelper
         public int x;
         public int y;
 
+        public static Vec2 Zero = new Vec2(0, 0);
+
         public Vec2(int x, int y)
         {
             this.x = x;

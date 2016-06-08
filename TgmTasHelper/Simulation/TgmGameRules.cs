@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace TgmTasHelper.Simulation
 {
-    public static class RotationSystem
+    public class TgmGameRules : IGameRules
     {
         private static Dictionary<TetrominoType, Vec2[][]> s_Def = new Dictionary<TetrominoType, Vec2[][]>();
 
-        static RotationSystem()
+        static TgmGameRules()
         {
             s_Def[TetrominoType.I] = new Vec2[4][] {
 				new Vec2[] {new Vec2(-2, 0), new Vec2(-1, 0), new Vec2(0, 0), new Vec2(1, 0)},
@@ -65,6 +65,16 @@ namespace TgmTasHelper.Simulation
         public static Vec2[] GetTetrominoPoints(TetrominoType tetrominoType, int angle)
         {
             return s_Def[tetrominoType][angle];
+        }
+
+        public IEnumerable<Vec2> GetTetrominoPoints(ITetromino tetromino)
+        {
+            return GetTetrominoPoints(tetromino.Type, tetromino.Pos, tetromino.Angle);
+        }
+
+        public IEnumerable<Vec2> GetTetrominoPoints(TetrominoType tetrominoType, Vec2 pos, int angle)
+        {
+            return s_Def[tetrominoType][angle].Select(a => pos + a);
         }
     }
 }

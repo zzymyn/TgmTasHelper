@@ -10,42 +10,37 @@ using TgmTasHelper.Properties;
 
 namespace TgmTasHelper.Simulation
 {
-    public class Board : IReadWriteBoard
+    public class MutableBoard : IBoard
     {
+        public IGameRules GameRules { get; private set; }
         public int Width { get; private set; }
         public int HeightVisible { get; private set; }
         public int HeightLogical { get; private set; }
         private TetrominoType[,] m_Data;
 
-        public Board(Board board)
+        public MutableBoard(IBoard other)
         {
-            Width = board.Width;
-            HeightVisible = board.HeightVisible;
-            HeightLogical = board.HeightLogical;
+            GameRules = other.GameRules;
+            Width = other.Width;
+            HeightVisible = other.HeightVisible;
+            HeightLogical = other.HeightLogical;
             m_Data = new TetrominoType[Width, HeightLogical];
-            Array.Copy(board.m_Data, m_Data, m_Data.Length);
+            other.ForEach((int x, int y, TetrominoType tetrominoType) =>
+                {
+                    Set(x, y, tetrominoType);
+                });
         }
 
-        public Board(int width = 10, int heightVisible = 20)
+        public MutableBoard(IGameRules gameRules, int width = 10, int heightVisible = 20)
         {
+            GameRules = gameRules;
             Width = width;
             HeightVisible = heightVisible;
             HeightLogical = heightVisible + 2;
             m_Data = new TetrominoType[Width, HeightLogical];
-
             for (int x = 0; x < Width; ++x)
                 for (int y = 0; y < HeightLogical; ++y)
                     m_Data[x, y] = TetrominoType.Empty;
-
-            Set(3, 0, TetrominoType.T);
-            Set(4, 0, TetrominoType.T);
-            Set(5, 0, TetrominoType.T);
-            Set(4, 1, TetrominoType.T);
-        }
-
-        public IReadWriteBoard CreateCopy()
-        {
-            return new Board(this);
         }
 
         public void ForEachVisible(Action<int, int, TetrominoType> action)
@@ -55,7 +50,7 @@ namespace TgmTasHelper.Simulation
                     action(x, y, m_Data[x, y]);
         }
 
-        public void ForEachLogical(Action<int, int, TetrominoType> action)
+        public void ForEach(Action<int, int, TetrominoType> action)
         {
             for (int x = 0; x < Width; ++x)
                 for (int y = 0; y < HeightLogical; ++y)
@@ -69,7 +64,7 @@ namespace TgmTasHelper.Simulation
             return m_Data[x, y];
         }
 
-        public TetrominoType GetLogical(int x, int y)
+        public TetrominoType Get(int x, int y)
         {
             if (x < 0 || x >= Width || y < 0 || y >= HeightLogical)
                 return TetrominoType.OutOfBounds;
@@ -79,6 +74,20 @@ namespace TgmTasHelper.Simulation
         public Vec2 GetSpawnPos()
         {
             return new Vec2(Width / 2, HeightLogical - 3);
+        }
+
+        public IBoard LockTetromino(ITetromino tetromino, out int clearedLines)
+        {
+            MutableBoard board = new MutableBoard(this);
+
+            foreach (var p in GameRules.GetTetrominoPoints(tetromino))
+            {
+                board.Set(p.x, p.y, tetromino.Type);
+            }
+
+            clearedLines = board.ClearCompletedLines();
+
+            return board;
         }
 
         public void Set(int x, int y, TetrominoType tetrominoType)
@@ -104,7 +113,7 @@ namespace TgmTasHelper.Simulation
             return completedLines;
         }
 
-        public bool Equals(IReadOnlyBoard other)
+        public bool Equals(IBoard other)
         {
             if (other == null)
                 return false;
@@ -112,14 +121,14 @@ namespace TgmTasHelper.Simulation
                 return false;
             for (int x = 0; x < Width; ++x)
                 for (int y = 0; y < HeightLogical; ++y)
-                    if (GetLogical(x, y) != other.GetLogical(x, y))
+                    if (Get(x, y) != other.Get(x, y))
                         return false;
             return true;
         }
 
         public override bool Equals(object obj)
         {
-            return Equals(obj as IReadOnlyBoard);
+            return Equals(obj as IBoard);
         }
 
         public override int GetHashCode()
@@ -137,7 +146,7 @@ namespace TgmTasHelper.Simulation
         {
             for (int x = 0; x < Width; ++x)
             {
-                if (GetLogical(x, y) == TetrominoType.Empty)
+                if (Get(x, y) == TetrominoType.Empty)
                     return false;
             }
             return true;

@@ -8,36 +8,32 @@ using System.Threading.Tasks;
 namespace TgmTasHelper.Simulation
 {
     [DebuggerDisplay("Move: {Move}, Rotate: {Rotate}")]
-    public class Input
+    public struct Input
     {
-        public Input PreviousInput { get; private set; }
         public Movement Move { get; private set; }
         public Rotation Rotate { get; private set; }
-
-        public static Input Null = new Input()
-        {
-            PreviousInput = null,
-            Move = Movement.None,
-            Rotate = Rotation.None,
-        };
 
         public static IEnumerable<Input> Initials()
         {
             foreach (var r in new[] { Rotation.None, Rotation.A, Rotation.B, })
             {
-                yield return new Input() { PreviousInput = null, Move = Movement.None, Rotate = r, };
+                yield return new Input() { Move = Movement.None, Rotate = r, };
             }
         }
 
-        public IEnumerable<Input> Successors()
+        public static IEnumerable<Input> Successors(IList<Input> previousInputs)
         {
+            Debug.Assert(previousInputs.Count > 0);
+
+            Input prevInput = previousInputs.Last();
+
             // check DAS still charged:
-            bool dasCharged = GetDasCharged();
+            bool dasCharged = GetDasCharged(previousInputs);
 
             foreach (Movement tryMove in Enum.GetValues(typeof(Movement)))
             {
                 // can't do the same movement twice in a row, unless we have DAS charge:
-                if (tryMove.IsLeftRight() && tryMove == Move && !dasCharged)
+                if (tryMove.IsLeftRight() && tryMove == prevInput.Move && !dasCharged)
                     continue;
 
                 foreach (Rotation tryRotate in Enum.GetValues(typeof(Rotation)))
@@ -47,12 +43,11 @@ namespace TgmTasHelper.Simulation
                         continue;
 
                     // can't do the same rotation button twice in a row:
-                    if (tryRotate != Rotation.None && tryRotate == Rotate)
+                    if (tryRotate != Rotation.None && tryRotate == prevInput.Rotate)
                         continue;
 
                     yield return new Input()
                     {
-                        PreviousInput = this,
                         Move = tryMove,
                         Rotate = tryRotate,
                     };
@@ -60,27 +55,24 @@ namespace TgmTasHelper.Simulation
             }
         }
 
-        private bool GetDasCharged()
+        private static bool GetDasCharged(IList<Input> previousInputs)
         {
-            // DAS is always charged at the start:
-            if (PreviousInput == null)
+            // we ignore the first input as it's the IRS frame and the piece can't move:
+            if (previousInputs.Count < 2)
                 return true;
 
-            if (!Move.IsLeftRight())
+            var move = previousInputs[1].Move;
+
+            if (!move.IsLeftRight())
                 return false;
 
-            for (Input i = this; i != null; i = i.PreviousInput)
-            {
-                if (i.PreviousInput == null)
-                    break;
+            return previousInputs.Skip(1).All(a => a.Move == move);
+        }
 
-                if (i.Move != Move)
-                {
-                    return false;
-                }
-            }
-
-            return true;
+        private Input(Movement move, Rotation rotate) : this()
+        {
+            Move = move;
+            Rotate = rotate;
         }
     }
 }
