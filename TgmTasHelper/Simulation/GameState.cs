@@ -9,6 +9,7 @@ namespace TgmTasHelper.Simulation
     public class GameState : IGameState
     {
         public IGameState PreviousGameState { get; private set; }
+        public List<Input> Inputs { get; private set; }
         public TetrominoType NextTetromino { get; private set; }
         public IGameRules GameRules { get; private set; }
         public IRng Rng { get; private set; }
@@ -31,6 +32,7 @@ namespace TgmTasHelper.Simulation
         public GameState(TetrominoType firstBlock, IGameRules gameRules, IRng rng)
         {
             PreviousGameState = null;
+            Inputs = null;
             NextTetromino = firstBlock;
             GameRules = gameRules;
             Rng = rng;
@@ -42,6 +44,7 @@ namespace TgmTasHelper.Simulation
         public GameState(IGameState other, ITetromino tetromino, List<Input> inputs)
         {
             PreviousGameState = other;
+            Inputs = inputs;
             NextTetromino = other.Rng.Peek().First();
             GameRules = other.GameRules;
             Rng = other.Rng.Next();

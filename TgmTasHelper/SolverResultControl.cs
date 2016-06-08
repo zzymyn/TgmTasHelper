@@ -52,14 +52,15 @@ namespace TgmTasHelper
             if (result == null)
             {
                 m_BoardRenderer.Reset();
-                m_Level.Text = string.Empty;
                 m_Time.Text = string.Empty;
+                m_Level.Text = string.Empty;
             }
             else
             {
                 m_BoardRenderer.SetBoardAndTetromino(result.NextState.PreviousGameState.Board, result.Tetromino);
-                m_Level.Text = result.NextState.Level.ToString();
                 m_Time.Text = result.NextState.TimeString;
+                m_Level.Text = string.Format("Level: {0}", result.NextState.Level.ToString());
+                m_BMT.Text = string.Format("BMT: {0}", result.Inputs.Count - 2);
             }
         }
     }

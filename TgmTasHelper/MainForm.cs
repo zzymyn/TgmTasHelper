@@ -59,6 +59,7 @@ namespace TgmTasHelper
                 if (gameState == null)
                 {
                     m_Time.Text = string.Empty;
+                    m_Level.Text = string.Empty;
                     m_CurrentBoardRenderer.Reset();
                     m_Preview.Reset();
                     m_PreviewStrip.Reset();
@@ -66,13 +67,14 @@ namespace TgmTasHelper
                 else
                 {
                     m_Time.Text = gameState.TimeString;
+                    m_Level.Text = string.Format("Level: {0}", gameState.Level);
                     m_CurrentBoardRenderer.SetBoard(gameState.Board);
                     m_Preview.SetPreview(gameState);
                     m_PreviewStrip.SetPreviewStrip(gameState);
 
-                    var scorer = new ResultScorer();
-
                     ct.ThrowIfCancellationRequested();
+
+                    var scorer = new ResultScorer();
 
                     var results = await Task.Run(() =>
                     {
@@ -88,14 +90,12 @@ namespace TgmTasHelper
                     try
                     {
                         m_Choices.SuspendLayout();
-                        int i = 0;
                         foreach (var a in results)
                         {
                             ct.ThrowIfCancellationRequested();
                             SolverResultControl r = CreateSolverResultControl();
                             r.Result = a;
                             r.Visible = true;
-                            ++i;
                         }
                     }
                     finally

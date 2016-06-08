@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.m_Choices = new System.Windows.Forms.FlowLayoutPanel();
-            this.m_BackButton = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -45,10 +44,12 @@
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.m_Time = new System.Windows.Forms.Label();
+            this.m_Level = new System.Windows.Forms.Label();
             this.m_Preview = new TgmTasHelper.SimulationRenderer();
             this.m_PreviewStrip = new TgmTasHelper.SimulationRenderer();
             this.m_CurrentBoardRenderer = new TgmTasHelper.SimulationRenderer();
-            this.m_Time = new System.Windows.Forms.Label();
+            this.m_BackButton = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.m_Preview)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.m_PreviewStrip)).BeginInit();
@@ -64,17 +65,6 @@
             this.m_Choices.Size = new System.Drawing.Size(1484, 400);
             this.m_Choices.TabIndex = 1;
             this.m_Choices.WrapContents = false;
-            // 
-            // m_BackButton
-            // 
-            this.m_BackButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.m_BackButton.Image = global::TgmTasHelper.Properties.Resources.arrow_undo;
-            this.m_BackButton.Location = new System.Drawing.Point(12, 27);
-            this.m_BackButton.Name = "m_BackButton";
-            this.m_BackButton.Size = new System.Drawing.Size(60, 60);
-            this.m_BackButton.TabIndex = 2;
-            this.m_BackButton.UseVisualStyleBackColor = true;
-            this.m_BackButton.Click += new System.EventHandler(this.m_BackButton_Click);
             // 
             // menuStrip1
             // 
@@ -196,9 +186,28 @@
             this.redoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.redoToolStripMenuItem.Text = "&Redo";
             // 
+            // m_Time
+            // 
+            this.m_Time.Font = new System.Drawing.Font("Courier New", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.m_Time.Location = new System.Drawing.Point(78, 396);
+            this.m_Time.Name = "m_Time";
+            this.m_Time.Size = new System.Drawing.Size(150, 23);
+            this.m_Time.TabIndex = 8;
+            this.m_Time.Text = "0";
+            this.m_Time.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // m_Level
+            // 
+            this.m_Level.Font = new System.Drawing.Font("Courier New", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.m_Level.Location = new System.Drawing.Point(78, 419);
+            this.m_Level.Name = "m_Level";
+            this.m_Level.Size = new System.Drawing.Size(150, 23);
+            this.m_Level.TabIndex = 9;
+            this.m_Level.Text = "0";
+            this.m_Level.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // m_Preview
             // 
-            this.m_Preview.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.m_Preview.BackColor = System.Drawing.Color.Black;
             this.m_Preview.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.m_Preview.Location = new System.Drawing.Point(78, 27);
@@ -210,7 +219,6 @@
             // 
             // m_PreviewStrip
             // 
-            this.m_PreviewStrip.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.m_PreviewStrip.BackColor = System.Drawing.Color.Black;
             this.m_PreviewStrip.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.m_PreviewStrip.Location = new System.Drawing.Point(234, 27);
@@ -222,7 +230,6 @@
             // 
             // m_CurrentBoardRenderer
             // 
-            this.m_CurrentBoardRenderer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.m_CurrentBoardRenderer.BackColor = System.Drawing.Color.Black;
             this.m_CurrentBoardRenderer.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.m_CurrentBoardRenderer.Location = new System.Drawing.Point(78, 93);
@@ -233,25 +240,26 @@
             this.m_CurrentBoardRenderer.TabStop = false;
             this.m_CurrentBoardRenderer.Text = "gameStateRenderer1";
             // 
-            // m_Time
+            // m_BackButton
             // 
-            this.m_Time.Font = new System.Drawing.Font("Courier New", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.m_Time.Location = new System.Drawing.Point(78, 396);
-            this.m_Time.Name = "m_Time";
-            this.m_Time.Size = new System.Drawing.Size(150, 23);
-            this.m_Time.TabIndex = 8;
-            this.m_Time.Text = "0";
-            this.m_Time.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.m_BackButton.Image = global::TgmTasHelper.Properties.Resources.arrow_undo;
+            this.m_BackButton.Location = new System.Drawing.Point(12, 27);
+            this.m_BackButton.Name = "m_BackButton";
+            this.m_BackButton.Size = new System.Drawing.Size(60, 60);
+            this.m_BackButton.TabIndex = 10;
+            this.m_BackButton.UseVisualStyleBackColor = true;
+            this.m_BackButton.Click += new System.EventHandler(this.m_BackButton_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1484, 924);
+            this.Controls.Add(this.m_BackButton);
+            this.Controls.Add(this.m_Level);
             this.Controls.Add(this.m_Time);
             this.Controls.Add(this.m_Preview);
             this.Controls.Add(this.m_PreviewStrip);
-            this.Controls.Add(this.m_BackButton);
             this.Controls.Add(this.m_Choices);
             this.Controls.Add(this.m_CurrentBoardRenderer);
             this.Controls.Add(this.menuStrip1);
@@ -272,7 +280,6 @@
 
         private SimulationRenderer m_CurrentBoardRenderer;
         private System.Windows.Forms.FlowLayoutPanel m_Choices;
-        private System.Windows.Forms.Button m_BackButton;
         private SimulationRenderer m_PreviewStrip;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
@@ -291,6 +298,8 @@
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private SimulationRenderer m_Preview;
         private System.Windows.Forms.Label m_Time;
+        private System.Windows.Forms.Label m_Level;
+        private System.Windows.Forms.Button m_BackButton;
     }
 }
 

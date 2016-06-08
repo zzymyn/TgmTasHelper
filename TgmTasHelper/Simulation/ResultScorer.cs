@@ -25,9 +25,7 @@ namespace TgmTasHelper.Simulation
             }
 
             score += result.Inputs.Count;
-            score += GetBumpiness(result.NextState.Board);
             score += 100 * CountHoles(result.NextState.Board);
-            score += 10 * GetHeight(result.NextState.Board, 9);
 
             return score;
         }
