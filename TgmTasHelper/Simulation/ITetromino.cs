@@ -11,5 +11,6 @@ namespace TgmTasHelper.Simulation
         TetrominoType Type { get; }
         Vec2 Pos { get; }
         int Angle { get; }
+        bool Locked { get; }
     }
 }

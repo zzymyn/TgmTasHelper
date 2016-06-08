@@ -48,7 +48,10 @@ namespace TgmTasHelper.Simulation
         {
             var state = m_State;
             var history = m_History.ToArray();
-            yield return NextBlock(ref state, history);
+            while (true)
+            {
+                yield return NextBlock(ref state, history);
+            }
         }
 
         private static UInt32 Next(ref UInt32 state)

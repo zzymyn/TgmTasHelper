@@ -11,7 +11,7 @@ namespace TgmTasHelper.Simulation
         IGameRules GameRules { get; }
         int Width { get; }
         int HeightVisible { get; }
-        int HeightLogical { get; }
+        int Height { get; }
 
         void ForEachVisible(Action<int, int, TetrominoType> action);
         void ForEach(Action<int, int, TetrominoType> action);

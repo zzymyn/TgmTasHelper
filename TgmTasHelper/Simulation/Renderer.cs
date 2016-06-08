@@ -14,13 +14,51 @@ namespace TgmTasHelper.Simulation
 {
     public static class Renderer
     {
-        public static Bitmap RenderBoard(IBoard board, int blockSize, CancellationToken cancel)
+        private static ThreadLocal<Bitmaps> s_Bitmaps = new ThreadLocal<Bitmaps>(() => { return new Bitmaps(); });
+
+        private class Bitmaps
         {
-            return RenderBoard(board, null, null, blockSize, cancel);
+            public TextureBrush EmptyBrush;
+            public Bitmap White;
+            public Dictionary<TetrominoType, Bitmap> Locked;
+            public Dictionary<TetrominoType, Bitmap> Active;
+
+            public Bitmaps()
+            {
+                EmptyBrush = new TextureBrush(Resources.Empty, WrapMode.Tile);
+                White = Resources.White;
+                Locked = new Dictionary<TetrominoType, Bitmap>()
+                {
+                    {TetrominoType.I, Resources.Locked},
+                    {TetrominoType.Z, Resources.Locked},
+                    {TetrominoType.S, Resources.Locked},
+                    {TetrominoType.J, Resources.Locked},
+                    {TetrominoType.L, Resources.Locked},
+                    {TetrominoType.O, Resources.Locked},
+                    {TetrominoType.T, Resources.Locked},
+                };
+                Active = new Dictionary<TetrominoType, Bitmap>()
+                {
+                    {TetrominoType.I, Resources.I},
+                    {TetrominoType.Z, Resources.Z},
+                    {TetrominoType.S, Resources.S},
+                    {TetrominoType.J, Resources.J},
+                    {TetrominoType.L, Resources.L},
+                    {TetrominoType.O, Resources.O},
+                    {TetrominoType.T, Resources.T},
+                };
+            }
         }
 
-        public static Bitmap RenderBoard(IBoard board, ITetromino tetromino, IGameRules gameRules, int blockSize, CancellationToken cancel)
+        public static Bitmap RenderBoard(IBoard board, int blockSize, CancellationToken cancel)
         {
+            return RenderBoard(board, null, blockSize, cancel);
+        }
+
+        public static Bitmap RenderBoard(IBoard board, ITetromino tetromino, int blockSize, CancellationToken cancel)
+        {
+            var bitmaps = s_Bitmaps.Value;
+
             cancel.ThrowIfCancellationRequested();
             Bitmap bitmap = new Bitmap(board.Width * blockSize, board.HeightVisible * blockSize, PixelFormat.Format24bppRgb);
 
@@ -33,14 +71,20 @@ namespace TgmTasHelper.Simulation
                 g.SmoothingMode = SmoothingMode.HighQuality;
 
                 cancel.ThrowIfCancellationRequested();
-                g.Clear(Color.Black);
+
+                {
+                    float scale = (float)blockSize / bitmaps.EmptyBrush.Image.Width;
+                    bitmaps.EmptyBrush.ResetTransform();
+                    bitmaps.EmptyBrush.ScaleTransform(scale, scale);
+                    g.FillRectangle(bitmaps.EmptyBrush, 0, 0, blockSize * board.Width, blockSize * board.HeightVisible);
+                }
 
                 board.ForEachVisible((int x, int y, TetrominoType tetrominoType) =>
                 {
-                    if (tetrominoType == TetrominoType.Empty)
+                    if (tetrominoType != TetrominoType.Empty)
                     {
                         cancel.ThrowIfCancellationRequested();
-                        PaintBlock(g, x, board.HeightVisible - y - 1, blockSize, Resources.Empty);
+                        PaintBlock(g, x, board.HeightVisible - y - 1, blockSize, bitmaps.White, 1.0f);
                     }
                 });
 
@@ -49,26 +93,72 @@ namespace TgmTasHelper.Simulation
                     if (tetrominoType != TetrominoType.Empty)
                     {
                         cancel.ThrowIfCancellationRequested();
-                        PaintBlock(g, x, board.HeightVisible - y - 1, blockSize, Resources.White, 1.0f);
+                        PaintBlock(g, x, board.HeightVisible - y - 1, blockSize, bitmaps.Locked[tetrominoType]);
                     }
                 });
 
-                board.ForEachVisible((int x, int y, TetrominoType tetrominoType) =>
+                if (tetromino != null)
                 {
-                    if (tetrominoType != TetrominoType.Empty)
+                    foreach (var p in board.GameRules.GetTetrominoPoints(tetromino))
                     {
                         cancel.ThrowIfCancellationRequested();
-                        PaintBlock(g, x, board.HeightVisible - y - 1, blockSize, GetBoardBlockBitmap(tetrominoType));
+                        PaintBlock(g, p.x, board.HeightVisible - p.y - 1, blockSize, bitmaps.Active[tetromino.Type]);
                     }
-                });
+                }
+            }
 
-                if (gameRules != null && tetromino != null)
+            return bitmap;
+        }
+
+        public static Bitmap RenderPreview(IGameState gameState, int blockSize, CancellationToken cancel)
+        {
+            var bitmaps = s_Bitmaps.Value;
+
+            cancel.ThrowIfCancellationRequested();
+            Bitmap bitmap = new Bitmap(gameState.Board.Width * blockSize, 4 * blockSize, PixelFormat.Format24bppRgb);
+
+            using (var g = Graphics.FromImage(bitmap))
+            {
+                g.CompositingMode = CompositingMode.SourceCopy;
+                g.CompositingQuality = CompositingQuality.HighQuality;
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                g.SmoothingMode = SmoothingMode.HighQuality;
+
+                foreach (var p in gameState.GameRules.GetTetrominoPoints(gameState.NextTetromino, Vec2.Zero, 0))
                 {
-                    foreach (var p in gameRules.GetTetrominoPoints(tetromino))
+                    cancel.ThrowIfCancellationRequested();
+                    PaintBlock(g, gameState.Board.GetSpawnPos().x + p.x, 2 - p.y - 1, blockSize, bitmaps.Active[gameState.NextTetromino]);
+                }
+            }
+
+            return bitmap;
+        }
+
+        public static Bitmap RenderPreviewStrip(IGameState gameState, int pieceCount, int blockSize, CancellationToken cancel)
+        {
+            var bitmaps = s_Bitmaps.Value;
+
+            cancel.ThrowIfCancellationRequested();
+            Bitmap bitmap = new Bitmap((5 * pieceCount + 1) * blockSize, 4 * blockSize, PixelFormat.Format24bppRgb);
+
+            using (var g = Graphics.FromImage(bitmap))
+            {
+                g.CompositingMode = CompositingMode.SourceCopy;
+                g.CompositingQuality = CompositingQuality.HighQuality;
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                g.SmoothingMode = SmoothingMode.HighQuality;
+
+                int x = 3;
+                foreach (var t in gameState.Rng.Peek().Take(pieceCount))
+                {
+                    foreach (var p in gameState.GameRules.GetTetrominoPoints(t, Vec2.Zero, 0))
                     {
                         cancel.ThrowIfCancellationRequested();
-                        PaintBlock(g, p.x, board.HeightVisible - p.y - 1, blockSize, GetBlockBitmap(tetromino.Type));
+                        PaintBlock(g, x + p.x, 2 - p.y - 1, blockSize, bitmaps.Active[t]);
                     }
+                    x += 5;
                 }
             }
 
@@ -84,52 +174,6 @@ namespace TgmTasHelper.Simulation
                 blockSize * y - sizeMod,
                 blockSize + 2.0f * sizeMod,
                 blockSize + 2.0f * sizeMod);
-        }
-
-        private static Bitmap GetBoardBlockBitmap(TetrominoType tetrominoType)
-        {
-            switch (tetrominoType)
-            {
-                default:
-                    return null;
-                case TetrominoType.I:
-                    return Resources.IDark;
-                case TetrominoType.Z:
-                    return Resources.ZDark;
-                case TetrominoType.S:
-                    return Resources.SDark;
-                case TetrominoType.J:
-                    return Resources.JDark;
-                case TetrominoType.L:
-                    return Resources.LDark;
-                case TetrominoType.O:
-                    return Resources.ODark;
-                case TetrominoType.T:
-                    return Resources.TDark;
-            }
-        }
-
-        private static Bitmap GetBlockBitmap(TetrominoType tetrominoType)
-        {
-            switch (tetrominoType)
-            {
-                default:
-                    return null;
-                case TetrominoType.I:
-                    return Resources.I;
-                case TetrominoType.Z:
-                    return Resources.Z;
-                case TetrominoType.S:
-                    return Resources.S;
-                case TetrominoType.J:
-                    return Resources.J;
-                case TetrominoType.L:
-                    return Resources.L;
-                case TetrominoType.O:
-                    return Resources.O;
-                case TetrominoType.T:
-                    return Resources.T;
-            }
         }
     }
 }

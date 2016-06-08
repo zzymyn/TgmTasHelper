@@ -45,6 +45,8 @@ namespace TgmTasHelper.Simulation
 
         public static IEnumerable<Result> BruteForce(IGameState state)
         {
+            List<Result> results = new List<Result>();
+
             // TODO: parallelize this
             TetrominoType tetrominoType = state.NextTetromino;
 
@@ -70,20 +72,26 @@ namespace TgmTasHelper.Simulation
             {
                 var prev = subStates.Dequeue();
 
+                if (prev.Tetromino.Locked)
                 {
-                    var nextState = state.Next(prev.Tetromino);
-                    yield return new Result(prev.Tetromino, prev.Inputs, nextState);
+                    var nextState = state.Next(prev.Tetromino, prev.Inputs);
+                    results.Add(new Result(prev.Tetromino, prev.Inputs, nextState));
+                    continue;
                 }
 
                 foreach (var input in Input.Successors(prev.Inputs))
                 {
                     var t = simulator.StepTetromino(prev.Tetromino, input);
+
                     if (seenStates.Contains(t))
                         continue;
                     seenStates.Add(t);
+
                     subStates.Enqueue(new SubState(t, prev, input));
                 }
             }
+
+            return results;
         }
     }
 }

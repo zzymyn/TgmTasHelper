@@ -24,6 +24,7 @@ namespace TgmTasHelper.Simulation
                 return x == null && y == null;
 
             return x.Type == y.Type
+                && x.Locked == y.Locked
                 && Enumerable.SequenceEqual(m_GameRules.GetTetrominoPoints(x), m_GameRules.GetTetrominoPoints(y));
         }
 
@@ -31,6 +32,7 @@ namespace TgmTasHelper.Simulation
         {
             int h = 17;
             h = h * 31 + obj.Type.GetHashCode();
+            h = h * 31 + obj.Locked.GetHashCode();
             foreach (var p in m_GameRules.GetTetrominoPoints(obj))
                 h = h * 31 + p.GetHashCode();
             return h;

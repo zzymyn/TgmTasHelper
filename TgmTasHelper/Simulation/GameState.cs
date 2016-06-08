@@ -13,7 +13,20 @@ namespace TgmTasHelper.Simulation
         public IGameRules GameRules { get; private set; }
         public IRng Rng { get; private set; }
         public IBoard Board { get; private set; }
+        public int Time { get; private set; }
         public int Level { get; private set; }
+
+        public string TimeString
+        {
+            get
+            {
+                int t = Time;
+                int ms = 100 * (t % 60) / 60;
+                int s = (t / 60) % 60;
+                int m = t / 60 / 60;
+                return string.Format("{0:00}:{1:00}:{2:00}", m, s, ms);
+            }
+        }
 
         public GameState(TetrominoType firstBlock, IGameRules gameRules, IRng rng)
         {
@@ -22,10 +35,11 @@ namespace TgmTasHelper.Simulation
             GameRules = gameRules;
             Rng = rng;
             Board = new MutableBoard(gameRules);
+            Time = 0;
             Level = 0;
         }
 
-        public GameState(IGameState other, ITetromino tetromino)
+        public GameState(IGameState other, ITetromino tetromino, List<Input> inputs)
         {
             PreviousGameState = other;
             NextTetromino = other.Rng.Peek().First();
@@ -34,12 +48,13 @@ namespace TgmTasHelper.Simulation
 
             int linesCleared;
             Board = other.Board.LockTetromino(tetromino, out linesCleared);
-            Level = other.Level;
+            Time = GameRules.GetNextTime(other.Time, other.Level, inputs, linesCleared);
+            Level = GameRules.GetNextLevel(other.Level, linesCleared);
         }
 
-        public IGameState Next(ITetromino tetromino)
+        public IGameState Next(ITetromino tetromino, List<Input> inputs)
         {
-            return new GameState(this, tetromino);
+            return new GameState(this, tetromino, inputs);
         }
     }
 }

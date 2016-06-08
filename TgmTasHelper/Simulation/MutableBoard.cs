@@ -15,7 +15,7 @@ namespace TgmTasHelper.Simulation
         public IGameRules GameRules { get; private set; }
         public int Width { get; private set; }
         public int HeightVisible { get; private set; }
-        public int HeightLogical { get; private set; }
+        public int Height { get; private set; }
         private TetrominoType[,] m_Data;
 
         public MutableBoard(IBoard other)
@@ -23,8 +23,8 @@ namespace TgmTasHelper.Simulation
             GameRules = other.GameRules;
             Width = other.Width;
             HeightVisible = other.HeightVisible;
-            HeightLogical = other.HeightLogical;
-            m_Data = new TetrominoType[Width, HeightLogical];
+            Height = other.Height;
+            m_Data = new TetrominoType[Width, Height];
             other.ForEach((int x, int y, TetrominoType tetrominoType) =>
                 {
                     Set(x, y, tetrominoType);
@@ -36,10 +36,10 @@ namespace TgmTasHelper.Simulation
             GameRules = gameRules;
             Width = width;
             HeightVisible = heightVisible;
-            HeightLogical = heightVisible + 2;
-            m_Data = new TetrominoType[Width, HeightLogical];
+            Height = heightVisible + 2;
+            m_Data = new TetrominoType[Width, Height];
             for (int x = 0; x < Width; ++x)
-                for (int y = 0; y < HeightLogical; ++y)
+                for (int y = 0; y < Height; ++y)
                     m_Data[x, y] = TetrominoType.Empty;
         }
 
@@ -53,7 +53,7 @@ namespace TgmTasHelper.Simulation
         public void ForEach(Action<int, int, TetrominoType> action)
         {
             for (int x = 0; x < Width; ++x)
-                for (int y = 0; y < HeightLogical; ++y)
+                for (int y = 0; y < Height; ++y)
                     action(x, y, m_Data[x, y]);
         }
 
@@ -66,14 +66,14 @@ namespace TgmTasHelper.Simulation
 
         public TetrominoType Get(int x, int y)
         {
-            if (x < 0 || x >= Width || y < 0 || y >= HeightLogical)
+            if (x < 0 || x >= Width || y < 0 || y >= Height)
                 return TetrominoType.OutOfBounds;
             return m_Data[x, y];
         }
 
         public Vec2 GetSpawnPos()
         {
-            return new Vec2(Width / 2, HeightLogical - 3);
+            return new Vec2(Width / 2, Height - 3);
         }
 
         public IBoard LockTetromino(ITetromino tetromino, out int clearedLines)
@@ -92,7 +92,7 @@ namespace TgmTasHelper.Simulation
 
         public void Set(int x, int y, TetrominoType tetrominoType)
         {
-            if (x < 0 || x >= Width || y < 0 || y >= HeightLogical)
+            if (x < 0 || x >= Width || y < 0 || y >= Height)
                 return;
             m_Data[x, y] = tetrominoType;
         }
@@ -101,7 +101,7 @@ namespace TgmTasHelper.Simulation
         {
             int completedLines = 0;
 
-            for (int y = HeightLogical - 1; y >= 0; --y)
+            for (int y = Height - 1; y >= 0; --y)
             {
                 if (!IsFullRow(y))
                     continue;
@@ -117,10 +117,10 @@ namespace TgmTasHelper.Simulation
         {
             if (other == null)
                 return false;
-            if (Width != other.Width || HeightLogical != other.HeightLogical)
+            if (Width != other.Width || Height != other.Height)
                 return false;
             for (int x = 0; x < Width; ++x)
-                for (int y = 0; y < HeightLogical; ++y)
+                for (int y = 0; y < Height; ++y)
                     if (Get(x, y) != other.Get(x, y))
                         return false;
             return true;
@@ -135,9 +135,9 @@ namespace TgmTasHelper.Simulation
         {
             int h = 17;
             h = h *= 31 + Width.GetHashCode();
-            h = h *= 31 + HeightLogical.GetHashCode();
+            h = h *= 31 + Height.GetHashCode();
             for (int x = 0; x < Width; ++x)
-                for (int y = 0; y < HeightLogical; ++y)
+                for (int y = 0; y < Height; ++y)
                     h = h *= 31 + m_Data[x, y].GetHashCode();
             return h;
         }
@@ -154,7 +154,7 @@ namespace TgmTasHelper.Simulation
 
         private void RemoveRow(int yStart)
         {
-            int yEnd = HeightLogical - 1;
+            int yEnd = Height - 1;
 
             for (int y = yStart; y < yEnd; ++y)
             {

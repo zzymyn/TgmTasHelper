@@ -11,6 +11,7 @@ namespace TgmTasHelper.Simulation
         None,
         Left,
         Right,
+        Down,
     }
 
     public static class MovementExtensions

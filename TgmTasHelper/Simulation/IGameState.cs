@@ -13,8 +13,10 @@ namespace TgmTasHelper.Simulation
         IGameRules GameRules { get; }
         IRng Rng { get; }
         IBoard Board { get; }
+        int Time { get; }
+        string TimeString { get; }
         int Level { get; }
 
-        IGameState Next(ITetromino tetromino);
+        IGameState Next(ITetromino tetromino, List<Input> inputs);
     }
 }

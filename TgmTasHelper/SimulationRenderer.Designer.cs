@@ -1,6 +1,6 @@
 ﻿namespace TgmTasHelper
 {
-    partial class BoardRenderer
+    partial class SimulationRenderer
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,12 +28,17 @@
         /// </summary>
         private void InitializeComponent()
         {
+            ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             this.SuspendLayout();
             // 
-            // GameStateRenderer
+            // BoardRenderer
             // 
+            this.BackColor = System.Drawing.Color.Black;
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.Name = "GameStateRenderer";
-            this.Size = new System.Drawing.Size(588, 552);
+            this.Size = new System.Drawing.Size(150, 300);
+            this.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
             this.ResumeLayout(false);
 
         }

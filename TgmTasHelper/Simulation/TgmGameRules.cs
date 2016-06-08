@@ -62,9 +62,37 @@ namespace TgmTasHelper.Simulation
             };
         }
 
-        public static Vec2[] GetTetrominoPoints(TetrominoType tetrominoType, int angle)
+        public IEnumerable<int> GetAllowedKicks(IBoard board, ITetromino tetromino, int targetAngle)
         {
-            return s_Def[tetrominoType][angle];
+            if (tetromino.Type == TetrominoType.I)
+                yield break;
+
+            bool canKick = false;
+
+            foreach (var p in s_Def[tetromino.Type][targetAngle])
+            {
+                if (p.x == -2)
+                {
+                    if (board.Get(tetromino.Pos.x + p.x, tetromino.Pos.y + p.y) != TetrominoType.Empty)
+                    {
+                        canKick = true;
+                    }
+                }
+                else if (p.x == 0)
+                {
+                    if (board.Get(tetromino.Pos.x + p.x, tetromino.Pos.y + p.y) != TetrominoType.Empty)
+                    {
+                        canKick = true;
+                    }
+                }
+            }
+
+            // always try kick right first
+            if (canKick)
+            {
+                yield return 1;
+                yield return -1;
+            }
         }
 
         public IEnumerable<Vec2> GetTetrominoPoints(ITetromino tetromino)
@@ -75,6 +103,60 @@ namespace TgmTasHelper.Simulation
         public IEnumerable<Vec2> GetTetrominoPoints(TetrominoType tetrominoType, Vec2 pos, int angle)
         {
             return s_Def[tetrominoType][angle].Select(a => pos + a);
+        }
+
+        public int GetNextTime(int time, int level, List<Input> inputs, int linesCleared)
+        {
+            time += inputs.Count;
+            if (linesCleared > 0)
+            {
+                time += LineClearTime(level + linesCleared);
+                time += LineClearAreTime(level + linesCleared);
+            }
+            else
+            {
+                time += AreTime(level);
+            }
+            time += 2;
+            return time;
+        }
+
+        public int GetNextLevel(int level, int linesCleared)
+        {
+            level += linesCleared;
+            if (level % 100 != 99)
+                ++level;
+            return level;
+        }
+
+        private int AreTime(int level)
+        {
+            if (level <= 99) return 16;
+            if (level <= 199) return 12;
+            if (level <= 299) return 12;
+            if (level <= 399) return 6;
+            if (level <= 499) return 5;
+            return 4;
+        }
+
+        private int LineClearAreTime(int level)
+        {
+            if (level <= 99) return 12;
+            if (level <= 199) return 6;
+            if (level <= 299) return 6;
+            if (level <= 399) return 6;
+            if (level <= 499) return 5;
+            return 4;
+        }
+
+        private int LineClearTime(int level)
+        {
+            if (level <= 99) return 12;
+            if (level <= 199) return 6;
+            if (level <= 299) return 6;
+            if (level <= 399) return 6;
+            if (level <= 499) return 5;
+            return 4;
         }
     }
 }
