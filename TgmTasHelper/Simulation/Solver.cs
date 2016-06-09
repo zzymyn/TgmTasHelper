@@ -12,41 +12,20 @@ namespace TgmTasHelper.Simulation
     {
         public class Result
         {
-            public ITetromino Tetromino { get; private set; }
-            public List<Input> Inputs { get; private set; }
+            public IGameState PrevState { get; private set; }
+            public GameStep Step { get; private set; }
             public IGameState NextState { get; private set; }
 
-            internal Result(ITetromino tetromino, List<Input> inputs, IGameState nextState)
+            internal Result(GameStep step, IGameState prevState, IGameState nextState)
             {
-                Tetromino = tetromino;
-                Inputs = inputs;
+                PrevState = prevState;
+                Step = step;
                 NextState = nextState;
-            }
-        }
-
-        private class SubState
-        {
-            public ITetromino Tetromino { get; set; }
-            public List<Input> Inputs { get; set; }
-
-            public SubState(ITetromino t, Input input)
-            {
-                Tetromino = t;
-                Inputs = new List<Input>(){ input};
-            }
-
-            public SubState(ITetromino t, SubState other, Input input)
-            {
-                Tetromino = t;
-                Inputs = new List<Input>(other.Inputs);
-                Inputs.Add(input);
             }
         }
 
         public static IEnumerable<Result> BruteForce(IGameState state)
         {
-            List<Result> results = new List<Result>();
-
             // TODO: parallelize this
             TetrominoType tetrominoType = state.NextTetromino;
 
@@ -54,7 +33,7 @@ namespace TgmTasHelper.Simulation
             var comparer = new TetrominoComparer(state.GameRules);
 
             var seenStates = new HashSet<ITetromino>(comparer);
-            var subStates = new Queue<SubState>();
+            var steps = new Queue<GameStep>();
 
             // IRS:
             foreach (var input in Input.Initials())
@@ -65,17 +44,20 @@ namespace TgmTasHelper.Simulation
                 if (seenStates.Contains(t))
                     continue;
                 seenStates.Add(t);
-                subStates.Enqueue(new SubState(t, input));
+                steps.Enqueue(new GameStep(t, input));
             }
 
-            while (subStates.Count > 0)
+            while (steps.Count > 0)
             {
-                var prev = subStates.Dequeue();
+                var prev = steps.Dequeue();
 
                 if (prev.Tetromino.Locked)
                 {
                     var nextState = state.Next(prev.Tetromino, prev.Inputs);
-                    results.Add(new Result(prev.Tetromino, prev.Inputs, nextState));
+                    yield return new Result(
+                        new GameStep(prev.Tetromino, prev.Inputs),
+                        state,
+                        nextState);
                     continue;
                 }
 
@@ -87,11 +69,9 @@ namespace TgmTasHelper.Simulation
                         continue;
                     seenStates.Add(t);
 
-                    subStates.Enqueue(new SubState(t, prev, input));
+                    steps.Enqueue(new GameStep(t, prev.Inputs, input));
                 }
             }
-
-            return results;
         }
     }
 }

@@ -15,16 +15,7 @@ namespace TgmTasHelper.Simulation
         {
             double score = 0;
 
-            int prevLevel = result.NextState.PreviousGameState.Level;
-            int nextLevel = result.NextState.Level;
-            int levelChange = nextLevel - prevLevel;
-
-            if (levelChange > 1 && levelChange < 5)
-            {
-                score += 20.0;
-            }
-
-            score += result.Inputs.Count;
+            score += result.Step.Inputs.Count;
             score += 100 * CountHoles(result.NextState.Board);
 
             return score;

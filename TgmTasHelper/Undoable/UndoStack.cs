@@ -18,12 +18,12 @@ namespace TgmTasHelper.Undoable
         {
             m_UndoStack.Push(operation);
             m_RedoStack.Clear();
-            operation.Do();
             CallStackChanged();
         }
 
-        public void Add(Action doAction, Action undoAction)
+        public void AddAndDo(Action doAction, Action undoAction)
         {
+            doAction();
             Add(new GenericUndoable(doAction, undoAction));
         }
 

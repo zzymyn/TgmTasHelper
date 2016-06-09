@@ -57,10 +57,10 @@ namespace TgmTasHelper
             }
             else
             {
-                m_BoardRenderer.SetBoardAndTetromino(result.NextState.PreviousGameState.Board, result.Tetromino);
+                m_BoardRenderer.SetBoardAndTetromino(result.PrevState.Board, result.Step.Tetromino);
                 m_Time.Text = result.NextState.TimeString;
                 m_Level.Text = string.Format("Level: {0}", result.NextState.Level.ToString());
-                m_BMT.Text = string.Format("BMT: {0}", result.Inputs.Count - 2);
+                m_BMT.Text = string.Format("BMT: {0}", result.Step.Inputs.Count - 2);
             }
         }
     }

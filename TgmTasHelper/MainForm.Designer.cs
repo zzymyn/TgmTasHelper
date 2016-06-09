@@ -31,25 +31,26 @@
             this.m_Choices = new System.Windows.Forms.FlowLayoutPanel();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.m_UndoMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.m_RedoMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.m_Time = new System.Windows.Forms.Label();
             this.m_Level = new System.Windows.Forms.Label();
+            this.m_NextButton = new System.Windows.Forms.Button();
+            this.m_PrevButton = new System.Windows.Forms.Button();
             this.m_Preview = new TgmTasHelper.SimulationRenderer();
             this.m_PreviewStrip = new TgmTasHelper.SimulationRenderer();
             this.m_CurrentBoardRenderer = new TgmTasHelper.SimulationRenderer();
-            this.m_BackButton = new System.Windows.Forms.Button();
+            this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.m_UndoMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.m_RedoMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.m_Preview)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.m_PreviewStrip)).BeginInit();
@@ -90,31 +91,6 @@
             this.fileToolStripMenuItem1.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem1.Text = "&File";
             // 
-            // newToolStripMenuItem
-            // 
-            this.newToolStripMenuItem.Image = global::TgmTasHelper.Properties.Resources.page;
-            this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-            this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
-            this.newToolStripMenuItem.Text = "&New";
-            this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
-            // 
-            // openToolStripMenuItem
-            // 
-            this.openToolStripMenuItem.Image = global::TgmTasHelper.Properties.Resources.folder_page;
-            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
-            this.openToolStripMenuItem.Text = "&Open";
-            // 
-            // saveToolStripMenuItem
-            // 
-            this.saveToolStripMenuItem.Image = global::TgmTasHelper.Properties.Resources.disk;
-            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
-            this.saveToolStripMenuItem.Text = "&Save";
-            // 
             // saveAsToolStripMenuItem
             // 
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
@@ -142,25 +118,6 @@
             this.editToolStripMenuItem1.Name = "editToolStripMenuItem1";
             this.editToolStripMenuItem1.Size = new System.Drawing.Size(39, 20);
             this.editToolStripMenuItem1.Text = "&Edit";
-            // 
-            // m_UndoMenuItem
-            // 
-            this.m_UndoMenuItem.Image = global::TgmTasHelper.Properties.Resources.arrow_undo;
-            this.m_UndoMenuItem.Name = "m_UndoMenuItem";
-            this.m_UndoMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
-            this.m_UndoMenuItem.Size = new System.Drawing.Size(174, 22);
-            this.m_UndoMenuItem.Text = "&Undo";
-            this.m_UndoMenuItem.Click += new System.EventHandler(this.m_UndoMenuItem_Click);
-            // 
-            // m_RedoMenuItem
-            // 
-            this.m_RedoMenuItem.Image = global::TgmTasHelper.Properties.Resources.arrow_redo;
-            this.m_RedoMenuItem.Name = "m_RedoMenuItem";
-            this.m_RedoMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.Z)));
-            this.m_RedoMenuItem.Size = new System.Drawing.Size(174, 22);
-            this.m_RedoMenuItem.Text = "&Redo";
-            this.m_RedoMenuItem.Click += new System.EventHandler(this.m_RedoMenuItem_Click);
             // 
             // fileToolStripMenuItem
             // 
@@ -206,6 +163,26 @@
             this.m_Level.Text = "0";
             this.m_Level.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // m_NextButton
+            // 
+            this.m_NextButton.Image = global::TgmTasHelper.Properties.Resources.arrow_right;
+            this.m_NextButton.Location = new System.Drawing.Point(234, 215);
+            this.m_NextButton.Name = "m_NextButton";
+            this.m_NextButton.Size = new System.Drawing.Size(60, 60);
+            this.m_NextButton.TabIndex = 11;
+            this.m_NextButton.UseVisualStyleBackColor = true;
+            this.m_NextButton.Click += new System.EventHandler(this.m_NextButton_Click);
+            // 
+            // m_PrevButton
+            // 
+            this.m_PrevButton.Image = global::TgmTasHelper.Properties.Resources.arrow_left;
+            this.m_PrevButton.Location = new System.Drawing.Point(12, 215);
+            this.m_PrevButton.Name = "m_PrevButton";
+            this.m_PrevButton.Size = new System.Drawing.Size(60, 60);
+            this.m_PrevButton.TabIndex = 10;
+            this.m_PrevButton.UseVisualStyleBackColor = true;
+            this.m_PrevButton.Click += new System.EventHandler(this.m_BackButton_Click);
+            // 
             // m_Preview
             // 
             this.m_Preview.BackColor = System.Drawing.Color.Black;
@@ -240,22 +217,57 @@
             this.m_CurrentBoardRenderer.TabStop = false;
             this.m_CurrentBoardRenderer.Text = "gameStateRenderer1";
             // 
-            // m_BackButton
+            // newToolStripMenuItem
             // 
-            this.m_BackButton.Image = global::TgmTasHelper.Properties.Resources.arrow_undo;
-            this.m_BackButton.Location = new System.Drawing.Point(12, 27);
-            this.m_BackButton.Name = "m_BackButton";
-            this.m_BackButton.Size = new System.Drawing.Size(60, 60);
-            this.m_BackButton.TabIndex = 10;
-            this.m_BackButton.UseVisualStyleBackColor = true;
-            this.m_BackButton.Click += new System.EventHandler(this.m_BackButton_Click);
+            this.newToolStripMenuItem.Image = global::TgmTasHelper.Properties.Resources.page;
+            this.newToolStripMenuItem.Name = "newToolStripMenuItem";
+            this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.newToolStripMenuItem.Text = "&New";
+            this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
+            // 
+            // openToolStripMenuItem
+            // 
+            this.openToolStripMenuItem.Image = global::TgmTasHelper.Properties.Resources.folder_page;
+            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
+            this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.openToolStripMenuItem.Text = "&Open";
+            // 
+            // saveToolStripMenuItem
+            // 
+            this.saveToolStripMenuItem.Image = global::TgmTasHelper.Properties.Resources.disk;
+            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+            this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.saveToolStripMenuItem.Text = "&Save";
+            // 
+            // m_UndoMenuItem
+            // 
+            this.m_UndoMenuItem.Image = global::TgmTasHelper.Properties.Resources.arrow_undo;
+            this.m_UndoMenuItem.Name = "m_UndoMenuItem";
+            this.m_UndoMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
+            this.m_UndoMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.m_UndoMenuItem.Text = "&Undo";
+            this.m_UndoMenuItem.Click += new System.EventHandler(this.m_UndoMenuItem_Click);
+            // 
+            // m_RedoMenuItem
+            // 
+            this.m_RedoMenuItem.Image = global::TgmTasHelper.Properties.Resources.arrow_redo;
+            this.m_RedoMenuItem.Name = "m_RedoMenuItem";
+            this.m_RedoMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.Z)));
+            this.m_RedoMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.m_RedoMenuItem.Text = "&Redo";
+            this.m_RedoMenuItem.Click += new System.EventHandler(this.m_RedoMenuItem_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1484, 924);
-            this.Controls.Add(this.m_BackButton);
+            this.Controls.Add(this.m_NextButton);
+            this.Controls.Add(this.m_PrevButton);
             this.Controls.Add(this.m_Level);
             this.Controls.Add(this.m_Time);
             this.Controls.Add(this.m_Preview);
@@ -299,7 +311,8 @@
         private SimulationRenderer m_Preview;
         private System.Windows.Forms.Label m_Time;
         private System.Windows.Forms.Label m_Level;
-        private System.Windows.Forms.Button m_BackButton;
+        private System.Windows.Forms.Button m_PrevButton;
+        private System.Windows.Forms.Button m_NextButton;
     }
 }
 

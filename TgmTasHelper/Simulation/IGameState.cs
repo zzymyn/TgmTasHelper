@@ -8,8 +8,6 @@ namespace TgmTasHelper.Simulation
 {
     public interface IGameState
     {
-        IGameState PreviousGameState { get; }
-        List<Input> Inputs { get; }
         TetrominoType NextTetromino { get; }
         IGameRules GameRules { get; }
         IRng Rng { get; }

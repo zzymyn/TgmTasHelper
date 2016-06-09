@@ -8,8 +8,6 @@ namespace TgmTasHelper.Simulation
 {
     public class GameState : IGameState
     {
-        public IGameState PreviousGameState { get; private set; }
-        public List<Input> Inputs { get; private set; }
         public TetrominoType NextTetromino { get; private set; }
         public IGameRules GameRules { get; private set; }
         public IRng Rng { get; private set; }
@@ -31,8 +29,6 @@ namespace TgmTasHelper.Simulation
 
         public GameState(TetrominoType firstBlock, IGameRules gameRules, IRng rng)
         {
-            PreviousGameState = null;
-            Inputs = null;
             NextTetromino = firstBlock;
             GameRules = gameRules;
             Rng = rng;
@@ -41,18 +37,15 @@ namespace TgmTasHelper.Simulation
             Level = 0;
         }
 
-        public GameState(IGameState other, ITetromino tetromino, List<Input> inputs)
+        public GameState(IGameState o, ITetromino tetromino, List<Input> inputs)
         {
-            PreviousGameState = other;
-            Inputs = inputs;
-            NextTetromino = other.Rng.Peek().First();
-            GameRules = other.GameRules;
-            Rng = other.Rng.Next();
-
+            NextTetromino = o.Rng.Peek().First();
+            GameRules = o.GameRules;
+            Rng = o.Rng.Next();
             int linesCleared;
-            Board = other.Board.LockTetromino(tetromino, out linesCleared);
-            Time = GameRules.GetNextTime(other.Time, other.Level, inputs, linesCleared);
-            Level = GameRules.GetNextLevel(other.Level, linesCleared);
+            Board = o.Board.LockTetromino(tetromino, out linesCleared);
+            Time = GameRules.GetNextTime(o.Time, o.Level, inputs, linesCleared);
+            Level = GameRules.GetNextLevel(o.Level, linesCleared);
         }
 
         public IGameState Next(ITetromino tetromino, List<Input> inputs)

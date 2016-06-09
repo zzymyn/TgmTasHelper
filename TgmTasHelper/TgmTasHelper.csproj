@@ -44,6 +44,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="File.cs" />
+    <Compile Include="FileOperationFactory.cs" />
+    <Compile Include="FileView.cs" />
+    <Compile Include="Simulation\GameStep.cs" />
     <Compile Include="Undoable\GenericUndoable.cs" />
     <Compile Include="Undoable\IUndoable.cs" />
     <Compile Include="CancellableTaskHelper.cs" />
@@ -187,6 +191,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\arrow_redo.png" />
+    <None Include="Resources\arrow_left.png" />
+    <None Include="Resources\arrow_right.png" />
     <Content Include="Resources\arrow_undo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
