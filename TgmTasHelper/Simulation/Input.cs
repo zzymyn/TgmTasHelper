@@ -2,15 +2,19 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace TgmTasHelper.Simulation
 {
+    [DataContract]
     [DebuggerDisplay("Move: {Move}, Rotate: {Rotate}")]
-    public struct Input
+    public struct Input : IEquatable<Input>
     {
+        [DataMember]
         public Movement Move { get; private set; }
+        [DataMember]
         public Rotation Rotate { get; private set; }
 
         public static IEnumerable<Input> Initials()
@@ -73,6 +77,27 @@ namespace TgmTasHelper.Simulation
         {
             Move = move;
             Rotate = rotate;
+        }
+
+        public bool Equals(Input other)
+        {
+            return Move == other.Move
+                && Rotate == other.Rotate;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || !(obj is Input))
+                return false;
+            return Equals((Input)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            int h = 17;
+            h = h * 31 + Move.GetHashCode();
+            h = h * 31 + Rotate.GetHashCode();
+            return h;
         }
     }
 }

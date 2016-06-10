@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using TgmTasHelper.Undoable;
 using TgmTasHelper.Simulation;
+using System.IO;
 
 namespace TgmTasHelper
 {
@@ -118,7 +119,7 @@ namespace TgmTasHelper
             return r;
         }
 
-        private void newToolStripMenuItem_Click(object sender, EventArgs e)
+        private void m_NewMenuItem_Click(object sender, EventArgs e)
         {
             Reset(new GameState(
                 TetrominoType.L,
@@ -144,6 +145,19 @@ namespace TgmTasHelper
         private void m_NextButton_Click(object sender, EventArgs e)
         {
             m_FileView.Next();
+        }
+
+        private void m_SaveMenuItem_Click(object sender, EventArgs e)
+        {
+            if (m_FileView.File != null)
+            {
+                using (var a = new MemoryStream())
+                {
+                    m_FileView.File.Save(a);
+                    var b = Encoding.UTF8.GetString(a.ToArray()); ;
+                    b = b + b;
+                }
+            }
         }
     }
 }

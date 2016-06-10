@@ -1,18 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace TgmTasHelper.Simulation
 {
+    [DataContract]
     public class GameState : IGameState
     {
+        [DataMember]
         public TetrominoType NextTetromino { get; private set; }
+        [DataMember]
         public IGameRules GameRules { get; private set; }
+        [DataMember]
         public IRng Rng { get; private set; }
+        [DataMember]
         public IBoard Board { get; private set; }
+        [DataMember]
         public int Time { get; private set; }
+        [DataMember]
         public int Level { get; private set; }
 
         public string TimeString

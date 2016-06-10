@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace TgmTasHelper.Simulation
 {
+    [DataContract]
     public class GameStep
     {
+        [DataMember]
         public ITetromino Tetromino { get; private set; }
+        [DataMember]
         public List<Input> Inputs { get; private set; }
 
         public GameStep(ITetromino tetromino, List<Input> inputs)

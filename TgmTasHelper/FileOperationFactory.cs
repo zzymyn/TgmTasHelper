@@ -13,29 +13,21 @@ namespace TgmTasHelper
     {
         public static IUndoable SelectResult(FileView fileView, Solver.Result result)
         {
-            var file = fileView.File;
-            int index = fileView.Index;
-
-            Debug.Assert(index < file.States.Count);
-            Debug.Assert(index <= file.Steps.Count);
-
-            var removedStates = file.States.Skip(index + 1).ToList();
-            var removedSteps = file.Steps.Skip(index).ToList();
+            var index = fileView.Index;
+            var fileAction = fileView.File.CreateSelectResult(index, result);
 
             var r = new GenericUndoable(() =>
             {
-                file.States.RemoveRange(index + 1, file.States.Count - index - 1);
-                file.Steps.RemoveRange(index, file.Steps.Count - index);
-                file.States.Add(result.NextState);
-                file.Steps.Add(result.Step);
+                fileView.SuspendUpdates();
+                fileAction.Do();
                 fileView.Index = index + 1;
+                fileView.ResumeUpdates();
             }, () =>
             {
-                file.Steps.Remove(result.Step);
-                file.States.Remove(result.NextState);
-                file.Steps.AddRange(removedSteps);
-                file.States.AddRange(removedStates);
+                fileView.SuspendUpdates();
+                fileAction.Undo();
                 fileView.Index = index;
+                fileView.ResumeUpdates();
             });
             return r;
         }

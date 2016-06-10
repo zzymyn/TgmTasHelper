@@ -12,6 +12,8 @@ namespace TgmTasHelper
     {
         private File m_File = null;
         private int m_Index = 0;
+        private bool m_SuspendUpdates = false;
+        private bool m_ChangePending = false;
 
         public event PropertyChangedEventHandler PropertyChanged;
         public event EventHandler StateChanged;
@@ -21,9 +23,14 @@ namespace TgmTasHelper
             get { return m_File; }
             set
             {
+                if (m_File != null)
+                {
+                    m_File.Changed -= m_File_Changed;
+                }
                 m_File = value;
                 if (m_File != null)
                 {
+                    m_File.Changed += m_File_Changed;
                     m_Index = m_File.States.Count - 1;
                 }
                 else
@@ -110,8 +117,31 @@ namespace TgmTasHelper
             }
         }
 
+        public void SuspendUpdates()
+        {
+            m_SuspendUpdates = true;
+        }
+
+        public void ResumeUpdates()
+        {
+            m_SuspendUpdates = false;
+            if (m_ChangePending)
+                NotifyChanged();
+        }
+
+        private void m_File_Changed(object sender, EventArgs e)
+        {
+            NotifyChanged();
+        }
+
         private void NotifyChanged()
         {
+            if (m_SuspendUpdates)
+            {
+                m_ChangePending = true;
+                return;
+            }
+            m_ChangePending = false;
             if (StateChanged != null)
             {
                 StateChanged(this, EventArgs.Empty);

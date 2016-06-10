@@ -4,19 +4,26 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using TgmTasHelper.Properties;
 
 namespace TgmTasHelper.Simulation
 {
+    [DataContract]
     public class MutableBoard : IBoard
     {
+        [DataMember]
         public IGameRules GameRules { get; private set; }
+        [DataMember]
         public int Width { get; private set; }
+        [DataMember]
         public int HeightVisible { get; private set; }
+        [DataMember]
         public int Height { get; private set; }
-        private TetrominoType[,] m_Data;
+        [DataMember]
+        private TetrominoType[] m_Data;
 
         public MutableBoard(IBoard other)
         {
@@ -24,7 +31,7 @@ namespace TgmTasHelper.Simulation
             Width = other.Width;
             HeightVisible = other.HeightVisible;
             Height = other.Height;
-            m_Data = new TetrominoType[Width, Height];
+            m_Data = new TetrominoType[Width * Height];
             other.ForEach((int x, int y, TetrominoType tetrominoType) =>
                 {
                     Set(x, y, tetrominoType);
@@ -37,38 +44,37 @@ namespace TgmTasHelper.Simulation
             Width = width;
             HeightVisible = heightVisible;
             Height = heightVisible + 2;
-            m_Data = new TetrominoType[Width, Height];
-            for (int x = 0; x < Width; ++x)
-                for (int y = 0; y < Height; ++y)
-                    m_Data[x, y] = TetrominoType.Empty;
+            m_Data = new TetrominoType[Width * Height];
+            for (int i = 0; i < m_Data.Length; ++i)
+                m_Data[i] = TetrominoType.Empty;
         }
 
         public void ForEachVisible(Action<int, int, TetrominoType> action)
         {
             for (int x = 0; x < Width; ++x)
                 for (int y = 0; y < HeightVisible; ++y)
-                    action(x, y, m_Data[x, y]);
+                    action(x, y, Get(x, y));
         }
 
         public void ForEach(Action<int, int, TetrominoType> action)
         {
             for (int x = 0; x < Width; ++x)
                 for (int y = 0; y < Height; ++y)
-                    action(x, y, m_Data[x, y]);
+                    action(x, y, Get(x, y));
         }
 
         public TetrominoType GetVisible(int x, int y)
         {
-            if (x < 0 || x >= Width || y < 0 || y >= HeightVisible)
+            if (y >= HeightVisible)
                 return TetrominoType.OutOfBounds;
-            return m_Data[x, y];
+            return Get(x, y);
         }
 
         public TetrominoType Get(int x, int y)
         {
             if (x < 0 || x >= Width || y < 0 || y >= Height)
                 return TetrominoType.OutOfBounds;
-            return m_Data[x, y];
+            return m_Data[x + y * Width];
         }
 
         public Vec2 GetSpawnPos()
@@ -94,7 +100,7 @@ namespace TgmTasHelper.Simulation
         {
             if (x < 0 || x >= Width || y < 0 || y >= Height)
                 return;
-            m_Data[x, y] = tetrominoType;
+            m_Data[x + y * Width] = tetrominoType;
         }
 
         public int ClearCompletedLines()
@@ -136,9 +142,8 @@ namespace TgmTasHelper.Simulation
             int h = 17;
             h = h *= 31 + Width.GetHashCode();
             h = h *= 31 + Height.GetHashCode();
-            for (int x = 0; x < Width; ++x)
-                for (int y = 0; y < Height; ++y)
-                    h = h *= 31 + m_Data[x, y].GetHashCode();
+            for (int i = 0; i < m_Data.Length; ++i)
+                h = h *= 31 + m_Data[i].GetHashCode();
             return h;
         }
 
@@ -160,13 +165,13 @@ namespace TgmTasHelper.Simulation
             {
                 for (int x = 0; x < Width; ++x)
                 {
-                    m_Data[x, y] = m_Data[x, y + 1];
+                    Set(x, y, Get(x, y + 1));
                 }
             }
 
             for (int x = 0; x < Width; ++x)
             {
-                m_Data[x, yEnd] = TetrominoType.Empty;
+                Set(x, yEnd, TetrominoType.Empty);
             }
         }
     }

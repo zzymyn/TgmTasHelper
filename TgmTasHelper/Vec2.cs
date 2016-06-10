@@ -2,15 +2,19 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace TgmTasHelper
 {
+    [DataContract]
     [DebuggerDisplay("({x}, {y})")]
     public struct Vec2 : IEquatable<Vec2>
     {
+        [DataMember]
         public int x;
+        [DataMember]
         public int y;
 
         public static Vec2 Zero = new Vec2(0, 0);

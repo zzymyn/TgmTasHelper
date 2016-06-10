@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace TgmTasHelper.Simulation
 {
+    [DataContract]
     public class TgmGameRules : IGameRules
     {
         private static Dictionary<TetrominoType, Vec2[][]> s_Def = new Dictionary<TetrominoType, Vec2[][]>();

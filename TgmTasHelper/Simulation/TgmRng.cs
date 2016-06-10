@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,12 +10,15 @@ namespace TgmTasHelper.Simulation
     /// <summary>
     /// The TGM2+ Random Number Generator
     /// </summary>
+    [DataContract]
     public class TgmRng : IRng
     {
         private const int HistorySize = 4;
         private const int HistoryRetry = 5;
 
+        [DataMember]
         private readonly UInt32 m_State;
+        [DataMember]
         private readonly TetrominoType[] m_History;
 
         public TgmRng(UInt32 state, TetrominoType initialBlock)
