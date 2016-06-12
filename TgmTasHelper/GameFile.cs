@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -13,9 +14,9 @@ using TgmTasHelper.Undoable;
 namespace TgmTasHelper
 {
     [DataContract]
-    public class File
+    public class GameFile
     {
-        private static DataContractSerializer m_Dcs = new DataContractSerializer(typeof(File), new DataContractSerializerSettings()
+        private static DataContractSerializer m_Dcs = new DataContractSerializer(typeof(GameFile), new DataContractSerializerSettings()
         {
             KnownTypes = new[]
             {
@@ -37,20 +38,34 @@ namespace TgmTasHelper
         public IReadOnlyList<IGameState> States { get { return m_States; } }
         public IReadOnlyList<GameStep> Steps { get { return m_Steps; } }
 
-        public File(IGameState initialState)
+        public GameFile(IGameState initialState)
         {
             m_States.Add(initialState);
         }
 
-        public void Save(Stream s)
+        public void Write(Stream stream)
         {
-            using (var x = XmlWriter.Create(s, new XmlWriterSettings()
+            using (var deflateStream = new GZipStream(stream, CompressionLevel.Optimal, true))
             {
-                CloseOutput = false,
-                Indent = true,
-            }))
+                using (var xmlWriter = XmlWriter.Create(deflateStream, new XmlWriterSettings()
+                {
+                    CloseOutput = false,
+                    Indent = true,
+                }))
+                {
+                    m_Dcs.WriteObject(xmlWriter, this);
+                }
+            }
+        }
+
+        public static GameFile Read(Stream stream)
+        {
+            using (var deflateStream = new GZipStream(stream, CompressionMode.Decompress, true))
             {
-                m_Dcs.WriteObject(x, this);
+                var r = (GameFile)m_Dcs.ReadObject(deflateStream);
+                if (r == null)
+                    throw new InvalidDataException();
+                return r;
             }
         }
 

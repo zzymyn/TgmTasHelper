@@ -103,6 +103,16 @@ namespace TgmTasHelper.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Black {
+            get {
+                object obj = ResourceManager.GetObject("Black", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap disk {
             get {
                 object obj = ResourceManager.GetObject("disk", resourceCulture);
@@ -276,6 +286,16 @@ namespace TgmTasHelper.Properties {
         internal static System.Drawing.Bitmap TDark {
             get {
                 object obj = ResourceManager.GetObject("TDark", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap time {
+            get {
+                object obj = ResourceManager.GetObject("time", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

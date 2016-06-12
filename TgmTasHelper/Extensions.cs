@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace TgmTasHelper
 {
@@ -41,6 +42,11 @@ namespace TgmTasHelper
         public static void RemoveLast<T>(this IList<T> l)
         {
             l.RemoveAt(l.Count - 1);
+        }
+
+        public static void Invoke(this Control control, Action action)
+        {
+            control.Invoke((Delegate)action);
         }
     }
 }

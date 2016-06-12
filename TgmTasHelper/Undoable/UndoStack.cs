@@ -11,8 +11,11 @@ namespace TgmTasHelper.Undoable
         private Stack<IUndoable> m_UndoStack = new Stack<IUndoable>();
         private Stack<IUndoable> m_RedoStack = new Stack<IUndoable>();
 
-        public delegate void StackChangedHandler(bool undoAvailable, bool redoAvailable);
-        public event StackChangedHandler StackChanged;
+        public event EventHandler StackChanged;
+
+        public bool HasUndo { get { return m_UndoStack.Count > 0; } }
+
+        public bool HasRedo { get { return m_RedoStack.Count > 0; } }
 
         public void Add(IUndoable operation)
         {
@@ -60,7 +63,7 @@ namespace TgmTasHelper.Undoable
         {
             if (StackChanged != null)
             {
-                StackChanged(m_UndoStack.Count > 0, m_RedoStack.Count > 0);
+                StackChanged(this, EventArgs.Empty);
             }
         }
     }

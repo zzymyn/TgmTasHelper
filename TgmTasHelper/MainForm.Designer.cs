@@ -48,6 +48,8 @@
             this.m_Level = new System.Windows.Forms.Label();
             this.m_NextButton = new System.Windows.Forms.Button();
             this.m_PrevButton = new System.Windows.Forms.Button();
+            this.m_SaveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.m_OpenFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.m_Preview = new TgmTasHelper.SimulationRenderer();
             this.m_PreviewStrip = new TgmTasHelper.SimulationRenderer();
             this.m_CurrentBoardRenderer = new TgmTasHelper.SimulationRenderer();
@@ -107,6 +109,7 @@
             this.m_OpenMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
             this.m_OpenMenuItem.Size = new System.Drawing.Size(195, 22);
             this.m_OpenMenuItem.Text = "&Open";
+            this.m_OpenMenuItem.Click += new System.EventHandler(this.m_OpenMenuItem_Click);
             // 
             // m_SaveMenuItem
             // 
@@ -124,6 +127,7 @@
             | System.Windows.Forms.Keys.S)));
             this.m_SaveAsMenuItem.Size = new System.Drawing.Size(195, 22);
             this.m_SaveAsMenuItem.Text = "Save As...";
+            this.m_SaveAsMenuItem.Click += new System.EventHandler(this.m_SaveAsMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
@@ -228,6 +232,19 @@
             this.m_PrevButton.UseVisualStyleBackColor = true;
             this.m_PrevButton.Click += new System.EventHandler(this.m_BackButton_Click);
             // 
+            // m_SaveFileDialog
+            // 
+            this.m_SaveFileDialog.DefaultExt = "xml.gz";
+            this.m_SaveFileDialog.Filter = "Compressed XML files|*.xml.gz|All Files|*.*";
+            this.m_SaveFileDialog.RestoreDirectory = true;
+            this.m_SaveFileDialog.SupportMultiDottedExtensions = true;
+            // 
+            // m_OpenFileDialog
+            // 
+            this.m_OpenFileDialog.DefaultExt = "xml.gz";
+            this.m_OpenFileDialog.Filter = "Compressed XML files|*.xml.gz|All Files|*.*";
+            this.m_OpenFileDialog.SupportMultiDottedExtensions = true;
+            // 
             // m_Preview
             // 
             this.m_Preview.BackColor = System.Drawing.Color.Black;
@@ -314,6 +331,8 @@
         private System.Windows.Forms.Label m_Level;
         private System.Windows.Forms.Button m_PrevButton;
         private System.Windows.Forms.Button m_NextButton;
+        private System.Windows.Forms.SaveFileDialog m_SaveFileDialog;
+        private System.Windows.Forms.OpenFileDialog m_OpenFileDialog;
     }
 }
 

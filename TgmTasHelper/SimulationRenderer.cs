@@ -17,6 +17,7 @@ namespace TgmTasHelper
     public partial class SimulationRenderer : PictureBox
     {
         private CancellableTaskHelper m_CancellableTaskHelper = new CancellableTaskHelper();
+        private Bitmap m_LoadingBitmap = Resources.Black;
 
         public SimulationRenderer()
         {
@@ -26,7 +27,7 @@ namespace TgmTasHelper
         public void Reset()
         {
             m_CancellableTaskHelper.Reset();
-            Image = null;
+            Image = m_LoadingBitmap;
         }
 
         public void SetBoard(IBoard board)
@@ -94,6 +95,8 @@ namespace TgmTasHelper
         {
             m_CancellableTaskHelper.Start(async (CancellationToken ct) =>
             {
+                Image = m_LoadingBitmap;
+
                 var bitmap = await Task.Run(() =>
                 {
                     return func(ct);

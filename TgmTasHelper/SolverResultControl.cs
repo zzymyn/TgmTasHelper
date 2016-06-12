@@ -54,6 +54,7 @@ namespace TgmTasHelper
                 m_BoardRenderer.Reset();
                 m_Time.Text = string.Empty;
                 m_Level.Text = string.Empty;
+                m_BMT.Text = string.Empty;
             }
             else
             {

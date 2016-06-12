@@ -45,9 +45,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="File.cs" />
-    <Compile Include="FileOperationFactory.cs" />
-    <Compile Include="FileView.cs" />
+    <Compile Include="GameFile.cs" />
+    <Compile Include="GameFileView.cs" />
     <Compile Include="Simulation\GameStep.cs" />
     <Compile Include="Undoable\GenericUndoable.cs" />
     <Compile Include="Undoable\IUndoable.cs" />
@@ -191,6 +190,8 @@
     <None Include="Resources\folder_page.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Black.png" />
+    <None Include="Resources\time.png" />
     <None Include="Resources\arrow_redo.png" />
     <None Include="Resources\arrow_left.png" />
     <None Include="Resources\arrow_right.png" />

@@ -15,7 +15,7 @@ namespace TgmTasHelper
         public async void Start(Func<CancellationToken, Task> action)
         {
             Reset();
-            m_CancelTokenSource = new CancellationTokenSource(); ;
+            m_CancelTokenSource = new CancellationTokenSource();
 
             try
             {
