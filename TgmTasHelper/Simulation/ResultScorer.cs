@@ -14,11 +14,14 @@ namespace TgmTasHelper.Simulation
         public double ScoreResult(Solver.Result result)
         {
             double score = 0;
-
             score += result.Step.Inputs.Count;
             score += 100 * CountHoles(result.NextState.Board);
-
             return score;
+        }
+
+        public bool HasHoles(Solver.Result result)
+        {
+            return CountHoles(result.NextState.Board) > 0;
         }
 
         private int CountHoles(IBoard board)

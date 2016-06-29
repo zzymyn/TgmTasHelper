@@ -36,7 +36,7 @@
             this.m_SaveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.m_SaveAsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
-            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.m_ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.m_UndoMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.m_RedoMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -50,13 +50,19 @@
             this.m_PrevButton = new System.Windows.Forms.Button();
             this.m_SaveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.m_OpenFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.m_HideHolesCheckbox = new System.Windows.Forms.CheckBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.m_Preview = new TgmTasHelper.SimulationRenderer();
             this.m_PreviewStrip = new TgmTasHelper.SimulationRenderer();
             this.m_CurrentBoardRenderer = new TgmTasHelper.SimulationRenderer();
+            this.m_MaxMoves = new System.Windows.Forms.NumericUpDown();
+            this.label1 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.m_Preview)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.m_PreviewStrip)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.m_CurrentBoardRenderer)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.m_MaxMoves)).BeginInit();
             this.SuspendLayout();
             // 
             // m_Choices
@@ -88,7 +94,7 @@
             this.m_SaveMenuItem,
             this.m_SaveAsMenuItem,
             this.toolStripMenuItem1,
-            this.exitToolStripMenuItem});
+            this.m_ExitMenuItem});
             this.fileToolStripMenuItem1.Name = "fileToolStripMenuItem1";
             this.fileToolStripMenuItem1.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem1.Text = "&File";
@@ -134,11 +140,12 @@
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.Size = new System.Drawing.Size(192, 6);
             // 
-            // exitToolStripMenuItem
+            // m_ExitMenuItem
             // 
-            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
-            this.exitToolStripMenuItem.Text = "&Exit";
+            this.m_ExitMenuItem.Name = "m_ExitMenuItem";
+            this.m_ExitMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.m_ExitMenuItem.Text = "&Exit";
+            this.m_ExitMenuItem.Click += new System.EventHandler(this.m_ExitMenuItem_Click);
             // 
             // editToolStripMenuItem1
             // 
@@ -245,6 +252,27 @@
             this.m_OpenFileDialog.Filter = "Compressed XML files|*.xml.gz|All Files|*.*";
             this.m_OpenFileDialog.SupportMultiDottedExtensions = true;
             // 
+            // m_HideHolesCheckbox
+            // 
+            this.m_HideHolesCheckbox.Location = new System.Drawing.Point(6, 19);
+            this.m_HideHolesCheckbox.Name = "m_HideHolesCheckbox";
+            this.m_HideHolesCheckbox.Size = new System.Drawing.Size(211, 24);
+            this.m_HideHolesCheckbox.TabIndex = 12;
+            this.m_HideHolesCheckbox.Text = "Hide options that will result in holes";
+            this.m_HideHolesCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Controls.Add(this.m_MaxMoves);
+            this.groupBox1.Controls.Add(this.m_HideHolesCheckbox);
+            this.groupBox1.Location = new System.Drawing.Point(300, 93);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(231, 182);
+            this.groupBox1.TabIndex = 13;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Solver Options:";
+            // 
             // m_Preview
             // 
             this.m_Preview.BackColor = System.Drawing.Color.Black;
@@ -279,11 +307,28 @@
             this.m_CurrentBoardRenderer.TabStop = false;
             this.m_CurrentBoardRenderer.Text = "gameStateRenderer1";
             // 
+            // m_MaxMoves
+            // 
+            this.m_MaxMoves.Location = new System.Drawing.Point(181, 49);
+            this.m_MaxMoves.Name = "m_MaxMoves";
+            this.m_MaxMoves.Size = new System.Drawing.Size(36, 20);
+            this.m_MaxMoves.TabIndex = 13;
+            // 
+            // label1
+            // 
+            this.label1.Location = new System.Drawing.Point(6, 46);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(169, 23);
+            this.label1.TabIndex = 14;
+            this.label1.Text = "Max moves to show:";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1484, 924);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.m_NextButton);
             this.Controls.Add(this.m_PrevButton);
             this.Controls.Add(this.m_Level);
@@ -298,9 +343,11 @@
             this.Text = "TGM TAS Helper";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.m_Preview)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.m_PreviewStrip)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.m_CurrentBoardRenderer)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.m_MaxMoves)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -325,7 +372,7 @@
         private System.Windows.Forms.ToolStripMenuItem m_SaveMenuItem;
         private System.Windows.Forms.ToolStripMenuItem m_SaveAsMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
-        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem m_ExitMenuItem;
         private SimulationRenderer m_Preview;
         private System.Windows.Forms.Label m_Time;
         private System.Windows.Forms.Label m_Level;
@@ -333,6 +380,10 @@
         private System.Windows.Forms.Button m_NextButton;
         private System.Windows.Forms.SaveFileDialog m_SaveFileDialog;
         private System.Windows.Forms.OpenFileDialog m_OpenFileDialog;
+        private System.Windows.Forms.CheckBox m_HideHolesCheckbox;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.NumericUpDown m_MaxMoves;
     }
 }
 

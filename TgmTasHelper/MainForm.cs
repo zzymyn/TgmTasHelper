@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using TgmTasHelper.Undoable;
 using TgmTasHelper.Simulation;
 using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace TgmTasHelper
 {
@@ -21,13 +22,58 @@ namespace TgmTasHelper
         private CancellableTaskHelper m_CancellableTaskHelper = new CancellableTaskHelper();
         private List<SolverResultControl> m_SolverResultControls = new List<SolverResultControl>();
         private UndoStack m_UndoStack = new UndoStack();
+        private Options m_Options = new Options();
+
+        private class Options : INotifyPropertyChanged
+        {
+            public event PropertyChangedEventHandler PropertyChanged;
+
+            private bool m_HideHoles = true;
+            private int m_MaxMoves = 6;
+
+            public bool HideHoles
+            {
+                get { return m_HideHoles; }
+                set
+                {
+                    if (m_HideHoles == value)
+                        return;
+                    m_HideHoles = value;
+                    NotifyChanged();
+                }
+            }
+
+            public int MaxMoves
+            {
+                get { return m_MaxMoves; }
+                set
+                {
+                    if (m_MaxMoves == value)
+                        return;
+                    m_MaxMoves = value;
+                    NotifyChanged();
+                }
+            }
+
+            private void NotifyChanged([CallerMemberName] string propertyName = "")
+            {
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                }
+            }
+        }
 
         public MainForm()
         {
             InitializeComponent();
 
+            m_HideHolesCheckbox.DataBindings.Add("Checked", m_Options, "HideHoles", false, DataSourceUpdateMode.OnPropertyChanged);
+            m_MaxMoves.DataBindings.Add("Value", m_Options, "MaxMoves", false, DataSourceUpdateMode.OnPropertyChanged);
+
             m_UndoStack.StackChanged += m_UndoStack_StackChanged;
             m_FileView.StateChanged += m_FileView_StateChanged;
+            m_Options.PropertyChanged += m_Options_PropertyChanged;
 
             m_UndoStack_StackChanged(this, EventArgs.Empty);
             m_FileView_StateChanged(this, EventArgs.Empty);
@@ -139,6 +185,16 @@ namespace TgmTasHelper
 
         private void m_FileView_StateChanged(object sender, EventArgs e)
         {
+            RefreshSolverResults();
+        }
+
+        private void m_Options_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            RefreshSolverResults();
+        }
+
+        private void RefreshSolverResults()
+        {
             var gameState = m_FileView.State;
 
             m_CancellableTaskHelper.Start(async (CancellationToken ct) =>
@@ -175,11 +231,11 @@ namespace TgmTasHelper
 
                     var results = await Task.Run(() =>
                     {
-                        return Solver.BruteForce(gameState)
-                            .Select(a => new { Result = a, Score = scorer.ScoreResult(a) })
-                            .Where(a => a.Score < 100)
-                            .OrderBy(a => a.Score)
-                            .Select(a => a.Result);
+                        var r = Solver.BruteForce(gameState);
+                        if (m_Options.HideHoles)
+                            r = r.Where(a => !scorer.HasHoles(a));
+                        r = r.Where(a => a.Step.Inputs.Count <= m_Options.MaxMoves + 2);
+                        return r.OrderBy(a => scorer.ScoreResult(a));
                     });
 
                     var controls = new List<SolverResultControl>();
@@ -260,6 +316,11 @@ namespace TgmTasHelper
         private void m_NextButton_Click(object sender, EventArgs e)
         {
             m_FileView.Next();
+        }
+
+        private void m_ExitMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
         }
     }
 }
